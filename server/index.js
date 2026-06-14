@@ -53,7 +53,7 @@ const memInviteCodes = [
 const memBouquets = [];
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://hariharpradeepjaybal_db_user:GgvHE9hSZRx9CjAI@cluster0.nyg5fte.mongodb.net/floravo?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
