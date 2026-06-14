@@ -1,128 +1,308 @@
-# contributing to floravo
+# Contributing to Floravo 🌷
 
-First off — thanks for being here. Floravo is a small project built with a lot of care, and contributions that respect that spirit are genuinely welcome.
+**Thank you for being here.**
 
----
+Floravo started as a small idea between friends and has grown into an open-source project dedicated to meaningful digital gifting — through flowers, photos, voice notes, and personal messages. Every contribution, no matter the size, helps this grow into something more.
 
-## before you start
-
-Check the [open issues](../../issues) before opening a new one. If you have an idea that isn't filed yet, open an issue first and describe what you're thinking. This saves everyone from doing duplicate work and lets us align before any code is written.
-
-For small fixes (typos, broken links, minor bugs) — just open a PR directly.
+Whether you're squashing a bug, polishing animations, improving documentation, or building something new — you're welcome here.
 
 ---
 
-## what we're looking for
+## Before You Begin
 
-**good fits**
-- Bug fixes with a clear reproduction case
-- Performance improvements to the placement engine or canvas export
-- Accessibility improvements (keyboard nav, screen reader support)
-- New flower assets that match the existing vector style
-- Viewer scene polish or additional animation refinement
-- Documentation improvements
+Please take a moment to:
 
-**not a good fit right now**
-- Full redesigns of the UI theme — the Victorian postal aesthetic is intentional
-- Swapping out core dependencies (Firebase, Next.js) without prior discussion
-- Features that require changes to both the frontend and the backend without a clear plan
+- Browse existing [Issues](../../issues) and [Discussions](../../discussions) before starting
+- Search to see if your idea or bug has already been raised
+- **Open an issue first** for larger changes — a quick conversation upfront saves everyone time
+
+For small fixes (typos, broken links, minor corrections), feel free to open a pull request directly.
 
 ---
 
-## setup
+## Repository Structure
+
+Floravo is a monorepo with separate frontend and backend packages.
+
+```
+floravo/
+├── frontend/          # Next.js application
+├── server/            # Express API + MongoDB backend
+├── README.md
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+└── LICENSE
+```
+
+### Frontend — `frontend/`
+
+| Technology | Role |
+|---|---|
+| Next.js + React | Application framework |
+| Tailwind CSS | Styling |
+| Firebase Authentication | Auth |
+
+Covers: Bouquet Builder, Recipient Experience, Animations, Canvas Rendering.
+
+### Backend — `server/`
+
+| Technology | Role |
+|---|---|
+| Express.js | API server |
+| MongoDB Atlas | Database |
+| Firebase Admin SDK | Auth management |
+
+Covers: User Management, Approval System, Bouquet Persistence, Share Links, Admin Features.
+
+---
+
+## What We're Looking For
+
+Contributions actively welcomed:
+
+- Bug fixes
+- Performance improvements
+- Accessibility improvements
+- Frontend polish and animations
+- Backend API improvements
+- MongoDB schema improvements
+- Firebase authentication improvements
+- Mobile responsiveness
+- Documentation updates and corrections
+- Testing improvements
+- New bouquet assets and flower packs
+
+### Please Discuss First
+
+The following require an open issue and maintainer sign-off before implementation:
+
+- Complete redesigns of the Floravo visual identity
+- Replacing core technologies (Next.js, Firebase, MongoDB)
+- Large architectural rewrites
+- Features requiring significant frontend and backend changes
+
+> The parchment-inspired visual aesthetic is intentional. UI proposals should respect and extend it, not replace it.
+
+---
+
+## Local Setup
+
+### 1. Clone the Repository
 
 ```bash
-# fork the repo, then:
-git clone https://github.com/your-username/floravo
-cd floravo/bouquet-app
-npm install
-cp .env.local.example .env.local   # fill in your Firebase credentials
-npm run dev
+git clone https://github.com/your-username/floravo.git
+cd floravo
 ```
 
-You'll need your own Firebase project (Auth + Firestore enabled) for local development. The backend server (Express + MongoDB) is a separate repo — builder, canvas export, and the viewer work without it. Save/share and admin features require it.
+### 2. Install Dependencies
 
----
+```bash
+# Frontend
+cd frontend && npm install
 
-## workflow
-
-```
-fork → branch → commit → PR → review → merge
-```
-
-**branch naming**
-
-```
-fix/canvas-export-rotation
-feat/flower-chrysanthemum
-docs/update-placement-algorithm
-chore/bump-firebase-sdk
+# Backend
+cd ../server && npm install
 ```
 
-**commit style** — plain imperative, lowercase, no period
+### 3. Configure Environment Variables
 
+```bash
+# Frontend
+cp frontend/.env.example frontend/.env.local
+
+# Backend
+cp server/.env.example server/.env
 ```
-fix canvas rotation on export
-add chrysanthemum to secondary layer
-update jitter defaults for tighter dome
-```
 
-No enforced commit convention beyond keeping it readable. Don't write `WIP` commits into your PR — squash or clean up before opening.
+Fill in the required Firebase and MongoDB credentials in each file.
 
----
+### 4. Run Development Servers
 
-## opening a pull request
+```bash
+# Frontend (in one terminal)
+cd frontend && npm run dev
 
-- Target the `main` branch
-- Fill in the PR description: what changed, why, and how to test it
-- Link the related issue if there is one (`closes #42`)
-- Keep PRs focused — one thing per PR is easier to review and faster to merge
-- Screenshots or screen recordings are appreciated for any visual change
-
----
-
-## adding flower assets
-
-Flower PNGs live in `public/flowers/`. If you're contributing a new one:
-
-- Match the existing style — flat vector look, transparent background, roughly consistent canvas size
-- Name it lowercase with hyphens: `garden-dahlia.png`
-- Add it to the relevant layer in the inventory in `app/builder/page.js`
-- Include a screenshot in your PR so reviewers can see how it looks in an arrangement
-
----
-
-## design system
-
-The theme is non-negotiable — parchment, sepia ink, typewriter fonts. Any UI contribution should use the existing CSS variables from `globals.css` rather than hardcoded values.
-
-```css
-/* use these */
-var(--parchment-light)   /* #f9f0dc */
-var(--parchment-mid)     /* #f2e4c0 */
-var(--ink-dark)          /* #1a0f07 */
-var(--postal-red)        /* #c0392b */
-var(--gold)              /* #b8860b */
+# Backend (in another terminal)
+cd server && npm run dev
 ```
 
 ---
 
-## reporting bugs
+## Contribution Workflow
 
-Open an issue and include:
-
-- What you did
-- What you expected
-- What actually happened
-- Browser + OS
-- A screenshot or console output if relevant
+```
+Fork the repo
+     ↓
+Create a branch
+     ↓
+Make your changes
+     ↓
+Open a pull request
+     ↓
+Review & feedback
+     ↓
+Merged ✓
+```
 
 ---
 
-## code of conduct
+## Branch Naming
 
-Be direct, be kind, assume good intent. Feedback on code is not feedback on the person. If something feels off, bring it up — don't let it fester.
+Use the format `type/short-description`:
+
+| Prefix | When to use |
+|---|---|
+| `fix/` | Bug fixes |
+| `feat/` | New features |
+| `docs/` | Documentation only |
+| `chore/` | Maintenance, dependencies |
+
+**Examples:**
+
+```
+fix/share-link-generation
+fix/mobile-layout-overflow
+feat/custom-flower-pack
+feat/recipient-animation
+docs/update-setup-guide
+chore/update-dependencies
+```
 
 ---
 
-*Floravo is built and maintained out of Pollachi, Tamil Nadu. Contributions from anywhere are welcome.*
+## Commit Style
+
+Keep commits concise and descriptive. A good commit message completes the sentence: *"This commit will…"*
+
+**Good:**
+```
+fix bouquet save failure
+add lily flower asset
+improve mobile layout
+update deployment guide
+```
+
+**Avoid:**
+```
+WIP
+final final fix
+asdf
+```
+
+Squash unnecessary commits before opening a pull request.
+
+---
+
+## Opening a Pull Request
+
+When submitting a PR, include:
+
+- **What** changed
+- **Why** it changed
+- **How** it was tested
+- A link to any related issues (e.g. `Closes #42`)
+
+Visual changes should include **screenshots or a short screen recording**.
+
+---
+
+## Adding Flower Assets
+
+New flower assets should:
+
+- Match the existing hand-illustrated visual style
+- Use transparent backgrounds (PNG)
+- Be consistent in scale with existing assets
+- Use lowercase, hyphenated filenames
+
+**Examples:**
+```
+garden-dahlia.png
+white-lily.png
+pink-peony.png
+```
+
+Include screenshots in your PR showing how the flower appears within an arrangement.
+
+---
+
+## Design Guidelines
+
+Floravo follows a **vintage correspondence aesthetic** — warm, intimate, and unhurried.
+
+When contributing UI changes:
+
+- Use existing design tokens and Tailwind variables
+- Maintain the parchment-inspired visual feel
+- Keep interactions elegant and restrained
+- Avoid introducing unrelated design systems or visual frameworks
+
+**Core visual principles:**
+
+| Principle | Description |
+|---|---|
+| Warm tones | Parchment-inspired palette |
+| Typography | Elegant, readable, classic |
+| Motion | Subtle animations only |
+| Density | Minimal visual clutter |
+| Tone | Personal and sentimental |
+
+Consistency is valued over novelty.
+
+---
+
+## Reporting Bugs
+
+A reproducible bug is much easier to fix. When reporting, please include:
+
+- What happened
+- What you expected to happen
+- Steps to reproduce
+- Browser and operating system
+- Screenshots (if applicable)
+- Console errors (if relevant)
+
+---
+
+## Security
+
+**Never include in issues or pull requests:**
+
+- Firebase credentials
+- MongoDB connection strings
+- API keys or secrets
+- Private user data
+
+If you discover a security vulnerability, please contact the maintainers privately rather than opening a public issue.
+
+---
+
+## First Contribution?
+
+Look for issues tagged:
+
+```
+good first issue
+help wanted
+documentation
+```
+
+New contributors are always welcome. Questions are encouraged — no question is too small.
+
+---
+
+## Code of Conduct
+
+- Be respectful and assume good intent
+- Give constructive feedback
+- Remember: feedback on code is not feedback on the person
+
+We're here to build something meaningful together. For full details, see [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
+
+---
+
+## Thank You
+
+Every contribution — a bug fix, a new feature, a design suggestion, a documentation correction, or a question in Discussions — helps Floravo become something better.
+
+Thank you for being part of it. 🌷
