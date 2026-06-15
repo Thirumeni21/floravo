@@ -168,6 +168,31 @@ export default function AdminPage() {
     }
   };
 
+  // 3b. Approve All Users
+  const handleApproveAll = async () => {
+    setActionLoadingId('approve-all');
+    setErrorMsg('');
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const apiHost = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiHost}/api/admin/users/approve-all`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setPendingUsers([]);
+        setAllUsers((prev) => prev.map((u) => !u.approved ? { ...u, approved: true, role: 'user' } : u));
+        router.push('/builder');
+      } else {
+        throw new Error(data.error || 'Approve all failed');
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to approve all users.');
+      setActionLoadingId(null);
+    }
+  };
+
   // 4. Update User Role & Access Status (e.g. Revoke permissions)
   const handleUpdateUser = async (id, updates) => {
     setActionLoadingId(id);
@@ -422,12 +447,26 @@ export default function AdminPage() {
         {activeTab === 'queue' && (
           <div className="letter-card" style={{ padding: '36px', height: 'fit-content', background: 'white', border: '1px solid var(--parchment-deep)', borderRadius: '8px' }}>
             <div className="letter-card-inner" style={{ padding: '4px' }}>
-              <h2 className="font-display" style={{ fontSize: '1.3rem', color: 'var(--ink-brown)', marginBottom: 8 }}>
-                Verification Queue
-              </h2>
-              <p style={{ fontSize: '0.75rem', color: 'var(--sepia-light)', marginBottom: 20 }}>
-                Review registered profiles waiting for permission to access the bouquet builder atelier.
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
+                <div>
+                  <h2 className="font-display" style={{ fontSize: '1.3rem', color: 'var(--ink-brown)', marginBottom: 8 }}>
+                    Verification Queue
+                  </h2>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--sepia-light)' }}>
+                    Review registered profiles waiting for permission to access the bouquet builder atelier.
+                  </p>
+                </div>
+                {pendingUsers.length > 0 && (
+                  <button 
+                    onClick={handleApproveAll}
+                    disabled={actionLoadingId !== null}
+                    className="btn-primary" 
+                    style={{ fontSize: '0.75rem', padding: '8px 16px' }}
+                  >
+                    {actionLoadingId === 'approve-all' ? 'Approving...' : 'Approve All & Enter'}
+                  </button>
+                )}
+              </div>
               <div style={{ borderBottom: '1px solid var(--parchment-deep)', marginBottom: 20 }} />
 
               {loadingUsers ? (

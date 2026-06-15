@@ -488,6 +488,32 @@ app.patch('/api/admin/users/:id/approve', requireAdmin, async (req, res) => {
   }
 });
 
+// 4b. Admin: Approve all pending users
+app.patch('/api/admin/users/approve-all', requireAdmin, async (req, res) => {
+  try {
+    if (isOfflineMode) {
+      let count = 0;
+      memUsers.forEach(u => {
+        if (!u.approved) {
+          u.approved = true;
+          u.role = 'user';
+          count++;
+        }
+      });
+      return res.status(200).json({ success: true, message: `${count} users approved successfully` });
+    }
+
+    const result = await User.updateMany(
+      { approved: false },
+      { $set: { approved: true, role: 'user' } }
+    );
+    res.status(200).json({ success: true, message: `${result.modifiedCount} users approved successfully` });
+  } catch (error) {
+    console.error('Error approving all users:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
 // 5. Admin: Reject / Delete a user registration
 app.delete('/api/admin/users/:id', requireAdmin, async (req, res) => {
   try {
