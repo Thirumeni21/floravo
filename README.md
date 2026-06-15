@@ -2,20 +2,47 @@
 
 > *"Craft arrangements of singular beauty, as if composed by Nature's own hand."*
 
-Bouquet builder & gifting platform. Select flowers, arrange them on a canvas, write a note, record a voice message, and send a shareable link. Recipients get a 5-scene immersive unboxing. Built with a Victorian postal theme.
+Bouquet builder & gifting platform. Select flowers, arrange them on a canvas, write a note, record a voice message, and send a shareable link. Recipients get a 6-scene immersive unboxing. Built with a Victorian postal theme.
 
 **Live →** https://floravo.vercel.app
 
 ---
 
+## Contributing
+
+Interested in contributing? Please read:
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
+Issues tagged `good first issue` are a great place to start.
+
+---
+
 ## scope
 
-```
+```text
 next.js 14 (app router)  ·  react 18  ·  firebase auth + firestore
 express backend (port 5000)  ·  mongodb  ·  html5 canvas
 ```
 
 Two runtimes. The Next.js frontend handles the builder, viewer, and admin pages. The Express backend owns bouquet persistence, voice/media storage, and the user approval workflow. Firebase bridges auth between them — ID tokens issued at login are verified by the backend on every protected request.
+
+---
+
+## architecture
+
+```text
+Next.js Frontend
+      ↓
+Firebase Authentication
+      ↓
+Express API
+      ↓
+MongoDB Atlas
+```
+
+Authentication is handled through Firebase ID tokens, which are verified by the backend before protected operations are executed.
 
 ---
 
@@ -38,7 +65,7 @@ flowchart LR
     subgraph client ["next.js client"]
         A["app/page.js\nlogin · register"]
         B["app/builder/page.js\ncanvas · arrangement"]
-        C["app/view/id/page.js\n5-scene viewer"]
+        C["app/view/id/page.js\n6-scene viewer"]
         D["app/admin/page.js\napproval · codes"]
     end
 
@@ -107,7 +134,7 @@ flowchart TD
     end
 
     LNK --> VIEW["recipient visits /view/:id"]
-    VIEW --> SCN["5-scene\nimmersive experience"]
+    VIEW --> SCN["6-scene\nimmersive experience"]
 ```
 
 ---
@@ -172,9 +199,9 @@ function jitter(anchor, jx = 18, jy = 14, jr = 10, js = 0.06) {
 
 ## viewer experience
 
-Five scenes play in sequence when a recipient opens `/view/:id`.
+Six scenes play in sequence when a recipient opens `/view/:id`.
 
-```
+```text
 0  intro        floral particles · typewriter text
 1  envelope     slides in · jiggles · recipient name
 2  letter       note typed character-by-character with frame
@@ -213,21 +240,30 @@ Five scenes play in sequence when a recipient opens `/view/:id`.
 
 ## project structure
 
-```
-bouquet-app/
-├── app/
-│   ├── page.js                   # login · register
-│   ├── builder/page.js           # canvas builder
-│   ├── view/[id]/page.js         # immersive viewer
-│   ├── admin/pending-users/      # admin dashboard
-│   └── globals.css               # design tokens
-├── lib/
-│   ├── auth.js                   # firebase helpers
-│   └── firebase.js               # sdk init
-├── public/flowers/               # vector assets
-├── firebase.js                   # firebase config
-├── .env.local                    # secrets — do not commit
-└── package.json
+```text
+floravo/
+├── frontend/
+│   ├── app/
+│   │   ├── page.js                   # login · register
+│   │   ├── builder/page.js           # canvas builder
+│   │   ├── view/[id]/page.js         # immersive viewer
+│   │   ├── admin/pending-users/      # admin dashboard
+│   │   └── globals.css               # design tokens
+│   ├── components/
+│   ├── lib/
+│   │   ├── auth.js                   # firebase helpers
+│   │   └── firebase.js               # sdk init
+│   ├── public/flowers/               # vector assets
+│   └── package.json
+├── server/
+│   ├── routes/
+│   ├── controllers/
+│   ├── models/
+│   └── package.json
+├── README.md
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+└── LICENSE
 ```
 
 > `flower-c41bd-firebase-adminsdk-*.json` — admin service account key. never commit this.
@@ -236,9 +272,9 @@ bouquet-app/
 
 ## local setup
 
-**requirements** — Node 18+, npm 9+, Firebase project (Auth + Firestore), backend server on `:5000`
+**requirements** — Node 18+, npm 9+, Firebase project (Auth + Firestore)
 
-**.env.local**
+**.env.local** (inside `frontend/`)
 
 ```ini
 NEXT_PUBLIC_FIREBASE_API_KEY=
@@ -251,16 +287,40 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
 NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
-**install & run**
+**frontend**
 
 ```bash
-cd bouquet-app
+cd frontend
 npm install
 npm run dev
 # → http://localhost:3000
 ```
 
-Backend server (not in this repo) must be running on `:5000` for save/share/admin to work. Builder, viewer, and export are fully functional without it.
+**backend**
+
+```bash
+cd server
+npm install
+npm run dev
+# → http://localhost:5000
+```
+
+The backend must be running for bouquet persistence, sharing, and admin functionality. Builder, viewer, and export are fully functional without it.
+
+---
+
+## current priorities
+
+We are actively looking for help with:
+
+- Loading skeletons
+- Mobile responsiveness
+- Accessibility improvements
+- Animation polish
+- Performance optimization
+- Documentation improvements
+
+Check the [Issues](../../issues) tab for available tasks.
 
 ---
 
@@ -272,7 +332,15 @@ Backend server (not in this repo) must be running on `:5000` for save/share/admi
 | bouquet builder + smart placement | ✅ |
 | canvas export (PNG) | ✅ |
 | save + shareable link | ✅ |
-| immersive viewer (5 scenes) | ✅ |
+| immersive viewer (6 scenes) | ✅ |
 | voice notes + polaroid | ✅ |
 | admin dashboard | ✅ |
-| backend server | ⚠️ not in this repo |
+| express backend | ✅ |
+| mongodb persistence | ✅ |
+| open source contributions | 🚀 active |
+
+---
+
+## license
+
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
