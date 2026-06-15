@@ -306,8 +306,8 @@ app.post('/api/auth/sync', async (req, res) => {
           firebaseUid,
           email,
           name,
-          role: isAdminUser ? 'admin' : 'pending',
-          approved: isAdminUser,
+          role: isAdminUser ? 'admin' : 'user',
+          approved: true,
           createdAt: new Date(),
         };
         memUsers.push(user);
@@ -324,8 +324,8 @@ app.post('/api/auth/sync', async (req, res) => {
         firebaseUid,
         email,
         name,
-        role: 'pending',
-        approved: false,
+        role: 'user',
+        approved: true,
       });
 
       // 1. Check if they are a designated admin
@@ -333,7 +333,7 @@ app.post('/api/auth/sync', async (req, res) => {
         user.role = 'admin';
         user.approved = true;
       } 
-      // 2. Check if an invite code was passed
+      // 2. Check if an invite code was passed (legacy, since all are approved now)
       else if (req.body.inviteCode) {
         const cleanedCode = req.body.inviteCode.trim().toUpperCase();
         const codeDoc = await InviteCode.findOne({ code: cleanedCode, used: false });
