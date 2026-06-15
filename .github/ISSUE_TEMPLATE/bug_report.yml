@@ -1,0 +1,57 @@
+name: Bug Report
+description: Report something that is not working as expected.
+title: "[Bug]: "
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly.
+      placeholder: Tell us what happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      placeholder: Tell us what you expected to happen...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to...
+        2. Click...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: Chrome, Firefox, Safari...
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: Desktop, Mobile...
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console Errors or Logs
+      render: shell
